@@ -101,3 +101,29 @@ def scrape_url(url, df,outputURL):
             # Recursively scrape the sub-URL's sub-URLs
             scrape_url(sub_url, sub_df,outputURL)
 
+def main():
+    for urls,outputUrls in make_URL_lists():
+        scrape_url(urls, web_scraper(urls,outputUrls),outputUrls)
+
+  #url = "https://www.wannasurf.com/spot/North_America/USA/California/index.html"
+
+
+def make_URL_lists():
+    f = open("countryList.txt", "r")
+    countries = f.readlines()
+    f.close()
+    urls = []
+    for c in countries:
+        fileName = c.split("/")
+        outputURl = fileName[0] + ".txt"
+        url = "https://www.wannasurf.com/spot/" + c.strip() +"/index.html"
+        urls.append((url,outputURl))
+    return urls
+
+
+def tempMain():
+    url = "https://www.wannasurf.com/spot/Africa/Algeria/index.html"
+    outputURl = "Africa.txt"
+    scrape_url(url, web_scraper(url,outputURl),outputURl)
+
+main()
