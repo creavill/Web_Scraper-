@@ -8,7 +8,7 @@ def enrich_data(csv_file):
         url = row['URL']
         data = extract_data(url)
         newDf.append(combine_dicts(row.to_dict() ,data))
-        print(newDf)
+        print(index)
     
     return pd.DataFrame.from_dict(newDf)
 
@@ -18,6 +18,6 @@ def combine_dicts(dict1, dict2):
     combined_dict.update(dict2)
     return combined_dict
 
-df = enrich_data('./NDBCScraper/StationList.csv')
+df = enrich_data('./NDBCScraper/BasicStationList.csv')
 df.to_csv('AdvancedStationList.csv', index=False)  
 print(df)
