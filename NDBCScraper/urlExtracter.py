@@ -29,5 +29,22 @@ class_name = 'histfiles'
 df = scrape_data(url, class_name)
 df.to_csv('./HistData.csv', index=False)
 print(df)
+
+    reavill_conner@instance-1:~/historical_data
+scp -r reavill_conner@instance-1:~/historical_data  D:\hist_surf_data
+gcloud storage cp --recursive gs://reavill_conner@instance-1:~/historical_data/* D:\hist_surf_data
+gsutil rsync -r gs://historical_data/ D:\hist_surf_data
+gcloud compute scp -r reavill_conner@instance-1:~/historical_data reavi@Conners-stuff:D:\hist_surf_data
+gcloud compute scp -r reavill_conner@instance-1:~/historical_data reavi@192.168.1.232:D:\hist_surf_data
+192.168.1.232
+
+reavi@Conners-stuff:~/test
+gcloud compute copy-files example-instance:~/REMOTE-DIR ~/LOCAL-DIR --zone=us-central1-a
+reavi@Conners-stuff:~/test
+gcloud compute copy-files reavill_conner@instance-1:~/historical_data ~/test --zone=us-central1-a
+
+lost
+46069_histData.csv
+46063_histData.csv
 '''
 

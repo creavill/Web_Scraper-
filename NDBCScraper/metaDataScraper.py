@@ -54,34 +54,65 @@ def scrapeTextFiles(lat,lon,url):
             lst.append(["lat","lon"]+lines.split())
         else:
             lst.append([lat,lon]+lines.split())
-    del lst[1]
+    if len(lst)>2:
+        del lst[1]
     return pd.DataFrame(lst)
     
 
 def get_all_data(file_name):
     df = pd.read_csv(file_name)
     dfs = []
-    prevName = ""
-    for index,rows in df.iterrows():
-        dfs.append(scrapeTextFiles(rows["lat"],rows["lon"],rows["url"]))
-
-        if rows['name'] != prevName:
-            result = pd.concat(dfs)
+    all_files = df.iterrows()
+    prevName = df['name'][0]
+    no_wvht = []
+    for index,rows in all_files:
+        print(index)
+        if rows['name'] != prevName and len(dfs)>0:
             sys.stdout.write('\r')
-            # the exact output you're looking for:
             sys.stdout.write(f'{str(index/31507*100)}% : {index}')
             sys.stdout.flush()
-            row_name = rows['name']
-            new_header = result.iloc[0] #grab the first row for the header
-            result = result[1:] #take the data less the header row
-            result.columns = new_header
-            result.to_csv(f'./historical_data/{row_name}_histData.csv')
+
+            result = pd.concat(dfs)
+            result.to_csv(f'./historical_data/{prevName}_histData.csv')
+            dfs=[]
+            
+        if rows['name'] not in no_wvht:
+            scrapedDF =scrapeTextFiles(rows["lat"],rows["lon"],rows["url"])
+            new_header = scrapedDF.iloc[0] #grab the first row for the header
+            scrapedDF = scrapedDF[1:] #take the data less the header row
+            scrapedDF.columns = new_header
+            #print(scrapedDF['WVHT'])
+            dfs.append(scrapeTextFiles(rows["lat"],rows["lon"],rows["url"]))
+
+        prevName = rows['name']
+        
     result = pd.concat(dfs)
     row_name = rows['name']
     new_header = result.iloc[0] #grab the first row for the header
     result = result[1:] #take the data less the header row
     result.columns = new_header
     result.to_csv(f'./historical_data/{prevName}_histData.csv')
+
 get_all_data("temp.csv")
 #print(extract_data("https://www.ndbc.noaa.gov/station_page.php?station=53046"))
 #print(extract_data("https://www.ndbc.noaa.gov/station_page.php?station=46215"))
+
+'''
+def get_all_data(file_name):
+    df = pd.read_csv(file_name)
+    dfs = {}
+    for index, row in df.iterrows():
+        name = row['name']
+        if name not in dfs:
+            dfs[name] = []
+        dfs[name].append(scrapeTextFiles(row["lat"],row["lon"],row["url"]))
+
+    for name, data in dfs.items():
+        result = pd.concat(data)
+        new_header = result.iloc[0] #grab the first row for the header
+        result = result[1:] #take the data less the header row
+        result.columns = new_header
+        result.to_csv(f'./historical_data/{name}_histData.csv')
+
+        
+'''

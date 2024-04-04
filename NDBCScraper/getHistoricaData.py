@@ -1,5 +1,4 @@
 import pandas as pd
-from metaDataScraper import extract_data
 
 def get_hist_files(stations, hist):
     dfStations = pd.read_csv(stations)
@@ -28,5 +27,6 @@ def cordinates(str):
         cords[2] = -float(cords[2])
     return(float(cords[0]),float(cords[2]))
 
+#get_hist_files("CleanedStationList.csv","HistData.csv")
     
     
